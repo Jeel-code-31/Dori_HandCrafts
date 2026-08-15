@@ -14,6 +14,7 @@ import QuickViewModal, { QuickViewProduct } from '@/components/QuickViewModal';
 import Story from '@/components/Story';
 import CraftedYourWaySection from '@/components/home/CraftedYourWaySection';
 import TrustStrip from '@/components/home/TrustStrip';
+import MalachiteProducts from '@/components/home/MalachiteProducts';
 
 // Static fallback products — shown whenever the DB returns no data.
 // Uses the same Shopify CDN images already referenced in CollectionsSection.
@@ -201,9 +202,13 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#FDF9F5]">
       {/* 1. Hero */}
       <HeroSection />
-     <Story/>
+      <Story />
       {/* Trust strip */}
       <TrustStrip />
+
+      {/* Malachite Products (Just before Most Loved Products) */}
+      <MalachiteProducts onQuickView={setQuickViewProd} />
+
       {/* 2. Curated Strip */}
       <CuratedStripSection products={products.slice(0, 8)} onQuickView={setQuickViewProd} />
 

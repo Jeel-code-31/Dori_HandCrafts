@@ -7,8 +7,11 @@ import QuickViewModal, { QuickViewProduct } from '@/components/QuickViewModal';
 import { useLanguage } from '@/context/LanguageContext';
 import { SlidersHorizontal, X, LayoutGrid, Grid2x2, ChevronDown } from 'lucide-react';
 
+import { FALLBACK_MALACHITE_PRODUCTS } from '@/components/home/MalachiteProducts';
+
 // ─── Fallback categories ──────────────────────────────────────────────────────
 const FALLBACK_CATEGORIES = [
+  { id: 'malachite', slug: 'malachite', name: 'Malachite Products', _count: { products: 12 } },
   { id: 'swing', slug: 'swing', name: 'Swings', _count: { products: 1 } },
   { id: 'hanging-lights', slug: 'hanging-lights', name: 'Hanging Lights', _count: { products: 1 } },
   { id: 'handbags', slug: 'handbags', name: 'Handbags', _count: { products: 1 } },
@@ -21,6 +24,7 @@ const FALLBACK_CATEGORIES = [
 
 // ─── Fallback products (one per category) — shown when DB is empty ─────────────
 const FALLBACK_PRODUCTS = [
+  ...FALLBACK_MALACHITE_PRODUCTS,
   {
     id: 'fp-1', slug: 'macrame-wall-hanging-boho', name: 'Boho Wall Hanging',
     description: 'Hand-knotted macramé wall hanging crafted from 100% organic cotton cord by skilled rural artisans.',
@@ -138,25 +142,29 @@ function ShopContent() {
   // Reset visible count when filters change
   useEffect(() => { setVisibleCount(PAGE_SIZE); }, [selectedCategory, sortOption, maxPrice, inStockOnly, featuredParam, newArrivalParam, bestSellerParam]);
 
-  // Fetch products — fall back to FALLBACK_PRODUCTS if DB is empty
+  // Fetch products — include FALLBACK_MALACHITE_PRODUCTS if missing from DB
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
       try {
         let url = `/api/products?sort=${sortOption}&maxPrice=${maxPrice}`;
-        if (selectedCategory) url += `&category=${selectedCategory}`;
+        if (selectedCategory && selectedCategory !== 'malachite') url += `&category=${selectedCategory}`;
         if (featuredParam) url += `&featured=true`;
         if (newArrivalParam) url += `&newArrival=true`;
         if (bestSellerParam) url += `&bestSeller=true`;
         const res = await fetch(url);
         const data = await res.json();
 
-        if (Array.isArray(data) && data.length > 0) {
-          setProducts(data);
-        } else {
-          // DB empty — use fallback products (filter by category client-side)
-          setProducts(FALLBACK_PRODUCTS);
+        let baseProducts = Array.isArray(data) && data.length > 0 ? data : FALLBACK_PRODUCTS;
+
+        // Ensure malachite fallback products are always merged
+        const combined = [...baseProducts];
+        for (const malProd of FALLBACK_MALACHITE_PRODUCTS) {
+          if (!combined.some((p: any) => p.id === malProd.id || p.slug === malProd.slug)) {
+            combined.push(malProd);
+          }
         }
+        setProducts(combined);
       } catch (e) {
         console.error(e);
         setProducts(FALLBACK_PRODUCTS);
@@ -167,14 +175,24 @@ function ShopContent() {
     fetchProducts();
   }, [selectedCategory, sortOption, maxPrice, featuredParam, newArrivalParam, bestSellerParam]);
 
-  // Fetch categories
+  // Fetch categories — ensure Malachite Products category is always available
   useEffect(() => {
     async function fetchCategories() {
       try {
         const res = await fetch('/api/categories');
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) setCategories(data);
-      } catch (e) { console.error(e); }
+        let cats = Array.isArray(data) && data.length > 0 ? data : FALLBACK_CATEGORIES;
+
+        if (!cats.some((c: any) => c.slug === 'malachite')) {
+          cats = [
+            { id: 'malachite', slug: 'malachite', name: 'Malachite Products', _count: { products: FALLBACK_MALACHITE_PRODUCTS.length } },
+            ...cats,
+          ];
+        }
+        setCategories(cats);
+      } catch (e) {
+        console.error(e);
+      }
     }
     fetchCategories();
   }, []);
@@ -183,7 +201,15 @@ function ShopContent() {
     // Filter by stock
     if (inStockOnly && p.stock <= 0) return false;
     // Filter by category (client-side for fallback mode)
-    if (selectedCategory && p.category?.slug !== selectedCategory) return false;
+    if (selectedCategory) {
+      const catSlug = typeof p.category === 'object' ? p.category?.slug : p.category;
+      const catName = typeof p.category === 'object' ? p.category?.name : '';
+      const isMatch =
+        catSlug === selectedCategory ||
+        (selectedCategory === 'malachite' &&
+          (catSlug?.includes('malachite') || catName?.toLowerCase().includes('malachite')));
+      if (!isMatch) return false;
+    }
     // Filter by max price (client-side for fallback mode)
     if (p.price > maxPrice) return false;
     // Filter by special flags
@@ -196,8 +222,8 @@ function ShopContent() {
   const activeCategoryName = selectedCategory
     ? categories.find((c) => c.slug === selectedCategory)?.name || selectedCategory
     : newArrivalParam ? 'New Arrivals'
-    : bestSellerParam ? 'Best Sellers'
-    : 'All Products';
+      : bestSellerParam ? 'Best Sellers'
+        : 'All Products';
 
   const sortLabels: Record<string, string> = {
     featured: t('shop.sortFeatured'),
@@ -247,11 +273,10 @@ function ShopContent() {
             {/* All tab */}
             <button
               onClick={() => setSelectedCategory('')}
-              className={`px-5 py-2 text-[11px] uppercase tracking-[0.2em] font-bold border transition-all duration-300 ${
-                selectedCategory === ''
-                  ? 'bg-[#2C2420] text-white border-[#2C2420]'
-                  : 'bg-white text-[#7A6F65] border-[#EDE4DC] hover:border-[#C8956A] hover:text-[#C8956A]'
-              }`}
+              className={`px-5 py-2 text-[11px] uppercase tracking-[0.2em] font-bold border transition-all duration-300 ${selectedCategory === ''
+                ? 'bg-[#2C2420] text-white border-[#2C2420]'
+                : 'bg-white text-[#7A6F65] border-[#EDE4DC] hover:border-[#C8956A] hover:text-[#C8956A]'
+                }`}
             >
               {t('shop.allProducts')}
             </button>
@@ -259,11 +284,10 @@ function ShopContent() {
               <button
                 key={c.id}
                 onClick={() => setSelectedCategory(c.slug)}
-                className={`px-5 py-2 text-[11px] uppercase tracking-[0.2em] font-bold border transition-all duration-300 ${
-                  selectedCategory === c.slug
-                    ? 'bg-[#C8956A] text-white border-[#C8956A]'
-                    : 'bg-white text-[#7A6F65] border-[#EDE4DC] hover:border-[#C8956A] hover:text-[#C8956A]'
-                }`}
+                className={`px-5 py-2 text-[11px] uppercase tracking-[0.2em] font-bold border transition-all duration-300 ${selectedCategory === c.slug
+                  ? 'bg-[#C8956A] text-white border-[#C8956A]'
+                  : 'bg-white text-[#7A6F65] border-[#EDE4DC] hover:border-[#C8956A] hover:text-[#C8956A]'
+                  }`}
               >
                 {c.name}
                 {c._count?.products > 0 && (
@@ -307,11 +331,10 @@ function ShopContent() {
                     <button
                       key={val}
                       onClick={() => { setSortOption(val); setSortOpen(false); }}
-                      className={`block w-full text-left px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] transition-colors duration-200 ${
-                        sortOption === val
-                          ? 'text-[#C8956A] bg-[#FEF7F1]'
-                          : 'text-[#7A6F65] hover:text-[#2C2420] hover:bg-[#FDF9F5]'
-                      }`}
+                      className={`block w-full text-left px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] transition-colors duration-200 ${sortOption === val
+                        ? 'text-[#C8956A] bg-[#FEF7F1]'
+                        : 'text-[#7A6F65] hover:text-[#2C2420] hover:bg-[#FDF9F5]'
+                        }`}
                     >
                       {label}
                     </button>
@@ -325,18 +348,16 @@ function ShopContent() {
               <button
                 onClick={() => setGridCols(4)}
                 title="4-column grid"
-                className={`p-2.5 transition-all duration-200 ${
-                  gridCols === 4 ? 'bg-[#2C2420] text-white' : 'text-[#8C8378] hover:text-[#C8956A]'
-                }`}
+                className={`p-2.5 transition-all duration-200 ${gridCols === 4 ? 'bg-[#2C2420] text-white' : 'text-[#8C8378] hover:text-[#C8956A]'
+                  }`}
               >
                 <LayoutGrid size={15} />
               </button>
               <button
                 onClick={() => setGridCols(2)}
                 title="2-column grid"
-                className={`p-2.5 transition-all duration-200 ${
-                  gridCols === 2 ? 'bg-[#2C2420] text-white' : 'text-[#8C8378] hover:text-[#C8956A]'
-                }`}
+                className={`p-2.5 transition-all duration-200 ${gridCols === 2 ? 'bg-[#2C2420] text-white' : 'text-[#8C8378] hover:text-[#C8956A]'
+                  }`}
               >
                 <Grid2x2 size={15} />
               </button>
@@ -357,11 +378,10 @@ function ShopContent() {
               <div className="space-y-1 text-xs">
                 <button
                   onClick={() => setSelectedCategory('')}
-                  className={`flex items-center justify-between w-full text-left py-1.5 px-2 transition-colors duration-200 ${
-                    selectedCategory === ''
-                      ? 'text-[#C8956A] font-bold bg-[#FEF7F1]'
-                      : 'text-[#7A6F65] hover:text-[#2C2420] hover:bg-[#FDF9F5]'
-                  }`}
+                  className={`flex items-center justify-between w-full text-left py-1.5 px-2 transition-colors duration-200 ${selectedCategory === ''
+                    ? 'text-[#C8956A] font-bold bg-[#FEF7F1]'
+                    : 'text-[#7A6F65] hover:text-[#2C2420] hover:bg-[#FDF9F5]'
+                    }`}
                 >
                   <span>{t('shop.allProducts')}</span>
                   <span className="text-[9px] text-[#8C8378]">{products.length}</span>
@@ -370,11 +390,10 @@ function ShopContent() {
                   <button
                     key={c.id}
                     onClick={() => setSelectedCategory(c.slug)}
-                    className={`flex items-center justify-between w-full text-left py-1.5 px-2 transition-colors duration-200 ${
-                      selectedCategory === c.slug
-                        ? 'text-[#C8956A] font-bold bg-[#FEF7F1]'
-                        : 'text-[#7A6F65] hover:text-[#2C2420] hover:bg-[#FDF9F5]'
-                    }`}
+                    className={`flex items-center justify-between w-full text-left py-1.5 px-2 transition-colors duration-200 ${selectedCategory === c.slug
+                      ? 'text-[#C8956A] font-bold bg-[#FEF7F1]'
+                      : 'text-[#7A6F65] hover:text-[#2C2420] hover:bg-[#FDF9F5]'
+                      }`}
                   >
                     <span>{c.name}</span>
                     {c._count?.products > 0 && (
@@ -460,11 +479,10 @@ function ShopContent() {
               <>
                 {/* Grid */}
                 <div
-                  className={`grid gap-4 transition-all duration-300 ${
-                    gridCols === 4
-                      ? 'grid-cols-2 sm:grid-cols-3 xl:grid-cols-4'
-                      : 'grid-cols-1 sm:grid-cols-2'
-                  }`}
+                  className={`grid gap-4 transition-all duration-300 ${gridCols === 4
+                    ? 'grid-cols-2 sm:grid-cols-3 xl:grid-cols-4'
+                    : 'grid-cols-1 sm:grid-cols-2'
+                    }`}
                 >
                   {filteredProducts.slice(0, visibleCount).map((product) => (
                     <ProductCard
@@ -497,7 +515,7 @@ function ShopContent() {
                         width="14" height="14" viewBox="0 0 14 14" fill="none"
                         className="group-hover:rotate-180 transition-transform duration-500"
                       >
-                        <path d="M7 1v12M1 7l6 6 6-6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M7 1v12M1 7l6 6 6-6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </button>
                   </div>

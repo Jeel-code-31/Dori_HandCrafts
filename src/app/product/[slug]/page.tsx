@@ -9,6 +9,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useLanguage } from '@/context/LanguageContext';
 import ProductCard from '@/components/ProductCard';
+import { FALLBACK_MALACHITE_PRODUCTS } from '@/components/home/MalachiteProducts';
 
 export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
@@ -38,22 +39,54 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
     async function fetchProduct() {
       setLoading(true);
       try {
+        let foundProduct: any = null;
         const res = await fetch(`/api/products/${resolvedParams.slug}`);
-        if (!res.ok) throw new Error('Not found');
-        const data = await res.json();
-        setProduct(data);
-        if (data.variants && data.variants.length > 0) {
-          setSelectedVariant(data.variants[0]);
+        if (res.ok) {
+          foundProduct = await res.json();
+        } else {
+          // Look up in fallback malachite products if not in DB
+          foundProduct = FALLBACK_MALACHITE_PRODUCTS.find(
+            (p: any) => p.slug === resolvedParams.slug || p.id === resolvedParams.slug
+          );
         }
 
-        // Fetch related products in category
-        const relRes = await fetch(`/api/products?category=${data.category?.slug}`);
-        const relData = await relRes.json();
-        if (Array.isArray(relData)) {
-          setRelated(relData.filter((p: any) => p.id !== data.id).slice(0, 4));
+        if (foundProduct) {
+          const enrichedProduct = {
+            description: 'Handcrafted luxury piece meticulously fashioned by master artisans using premium materials.',
+            shortDescription: 'Exquisite handcrafted living collection item.',
+            stock: 10,
+            material: 'Genuine Malachite & Solid Brass',
+            dimensions: 'Standard Craft Size',
+            color: 'Deep Green & Gold Accent',
+            careInstructions: 'Spot clean gently with a soft dry cloth. Keep away from direct harsh chemicals.',
+            shippingInformation: 'Handcrafted on order. Ships within 3-5 business days across India and internationally.',
+            reviews: [
+              { id: 'rev-1', userName: 'Ananya Sharma', rating: 5, comment: 'Absolutely breathtaking craft quality and rich color!' },
+              { id: 'rev-2', userName: 'Vikram Mehta', rating: 5, comment: 'Priceless addition to our living room decor. Highly recommend.' }
+            ],
+            ...foundProduct,
+          };
+
+          setProduct(enrichedProduct);
+          if (enrichedProduct.variants && enrichedProduct.variants.length > 0) {
+            setSelectedVariant(enrichedProduct.variants[0]);
+          }
+
+          // Fetch or set related products
+          try {
+            const relRes = await fetch(`/api/products?category=${enrichedProduct.category?.slug}`);
+            const relData = await relRes.json();
+            if (Array.isArray(relData) && relData.length > 1) {
+              setRelated(relData.filter((p: any) => p.id !== enrichedProduct.id).slice(0, 4));
+            } else {
+              setRelated(FALLBACK_MALACHITE_PRODUCTS.filter((p: any) => p.id !== enrichedProduct.id).slice(0, 4));
+            }
+          } catch {
+            setRelated(FALLBACK_MALACHITE_PRODUCTS.filter((p: any) => p.id !== enrichedProduct.id).slice(0, 4));
+          }
         }
       } catch (e) {
-        console.error(e);
+        console.error('Fetch product error:', e);
       } finally {
         setLoading(false);
       }
