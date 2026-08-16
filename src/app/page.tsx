@@ -198,6 +198,13 @@ export default function HomePage() {
   const bestSellerMain = bestSellers[0] || products[0];
   const bestSellerGrid = bestSellers.slice(1, 5);
 
+  const malachiteProducts = products.filter(
+    (p) =>
+      p.category?.slug === 'malachite' ||
+      p.category?.name?.toLowerCase().includes('malachite') ||
+      p.slug?.includes('malachite')
+  );
+
   return (
     <div className="min-h-screen bg-[#FDF9F5]">
       {/* 1. Hero */}
@@ -207,7 +214,7 @@ export default function HomePage() {
       <TrustStrip />
 
       {/* Malachite Products (Just before Most Loved Products) */}
-      <MalachiteProducts onQuickView={setQuickViewProd} />
+      <MalachiteProducts products={malachiteProducts.length > 0 ? malachiteProducts : undefined} onQuickView={setQuickViewProd} />
 
       {/* 2. Curated Strip */}
       <CuratedStripSection products={products.slice(0, 8)} onQuickView={setQuickViewProd} />

@@ -39,6 +39,7 @@ export default function QuickViewModal({
 
   if (!product) return null;
 
+  const getImageUrl = (img: any) => (typeof img === 'string' ? img : img?.url || img?.src || '');
   const currentPrice = selectedVariant?.price || product.price;
   const inWishlist = isInWishlist(product.id);
 
@@ -47,7 +48,7 @@ export default function QuickViewModal({
       productId: product.id,
       name: product.name,
       price: currentPrice,
-      image: product.images[0]?.url || '',
+      image: getImageUrl(product.images[0]),
       variantId: selectedVariant?.id,
       variantName: selectedVariant?.name,
       quantity,
@@ -70,7 +71,7 @@ export default function QuickViewModal({
         <div className="md:w-1/2 bg-[#D9C5B2]/20 p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-[#D9C5B2]">
           <div className="relative w-full aspect-[4/5] min-h-[250px] max-h-96 overflow-hidden">
             <Image
-              src={product.images[activeImageIdx]?.url || 'https://images.unsplash.com/photo-1524758631624-e2822e304c36'}
+              src={getImageUrl(product.images[activeImageIdx]) || 'https://images.unsplash.com/photo-1524758631624-e2822e304c36'}
               alt={product.name}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -89,7 +90,7 @@ export default function QuickViewModal({
                     activeImageIdx === idx ? 'border-[#2C2420]' : 'border-transparent opacity-70'
                   }`}
                 >
-                  <Image src={img.url} alt="" fill sizes="56px" className="object-cover" />
+                  <Image src={getImageUrl(img)} alt="" fill sizes="56px" className="object-cover" />
                 </button>
               ))}
             </div>

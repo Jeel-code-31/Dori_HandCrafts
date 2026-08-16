@@ -109,6 +109,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
     );
   }
 
+  const getImageUrl = (img: any) => (typeof img === 'string' ? img : img?.url || img?.src || '');
   const currentPrice = selectedVariant?.price || product.price;
   const inWishlist = isInWishlist(product.id);
   const images = product.images || [];
@@ -118,7 +119,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
       productId: product.id,
       name: product.name,
       price: currentPrice,
-      image: images[0]?.url || '',
+      image: getImageUrl(images[0]),
       variantId: selectedVariant?.id,
       variantName: selectedVariant?.name,
       quantity,
@@ -182,7 +183,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           <div className="lg:col-span-7 space-y-4">
             <div className="relative w-full aspect-[4/5] min-h-[300px] border border-[#D9C5B2] shadow-sm bg-[#D9C5B2]/20 overflow-hidden group">
               <Image
-                src={images[selectedImgIdx]?.url || 'https://images.unsplash.com/photo-1524758631624-e2822e304c36'}
+                src={getImageUrl(images[selectedImgIdx]) || 'https://images.unsplash.com/photo-1524758631624-e2822e304c36'}
                 alt={product.name}
                 fill
                 priority
@@ -190,7 +191,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 className="object-cover"
               />
               <button
-                onClick={() => setFullscreenImg(images[selectedImgIdx]?.url || null)}
+                onClick={() => setFullscreenImg(getImageUrl(images[selectedImgIdx]) || null)}
                 className="absolute top-4 right-4 bg-[#F9F7F2]/80 backdrop-blur-xs p-2 text-[#2C2420] rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <Maximize2 size={18} />
@@ -208,7 +209,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                       selectedImgIdx === idx ? 'border-[#2C2420]' : 'border-transparent opacity-70'
                     }`}
                   >
-                    <Image src={img.url} alt="" fill sizes="100px" className="object-cover" />
+                    <Image src={getImageUrl(img)} alt="" fill sizes="100px" className="object-cover" />
                   </button>
                 ))}
               </div>

@@ -32,8 +32,15 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
   const { t } = useLanguage();
 
   const imgList = Array.isArray(product.images) ? product.images : [];
-  const primaryImg = imgList.find((img) => img?.isPrimary)?.url || imgList[0]?.url || 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80';
-  const secondaryImg = imgList.find((img) => img?.isSecondary)?.url || imgList[1]?.url || primaryImg;
+  const getUrl = (img: any) => (typeof img === 'string' ? img : img?.url || img?.src || '');
+  const primaryImg =
+    getUrl(imgList.find((img: any) => typeof img === 'object' && img?.isPrimary)) ||
+    getUrl(imgList[0]) ||
+    'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80';
+  const secondaryImg =
+    getUrl(imgList.find((img: any) => typeof img === 'object' && img?.isSecondary)) ||
+    getUrl(imgList[1]) ||
+    primaryImg;
 
   const inWishlist = isInWishlist(product.id);
 

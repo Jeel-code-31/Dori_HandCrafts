@@ -103,7 +103,7 @@ export const FALLBACK_MALACHITE_PRODUCTS = [
       { url: '/images/F/locate.jpg', isSecondary: true },
     ],
   },
-  // ── Extended Malachite Products (Shown exclusively on Shop side) ──
+
   {
     id: 'mal-7',
     slug: 'malachite-inlaid-serving-tray-luxe',
@@ -193,7 +193,7 @@ export default function MalachiteProducts({ products, onQuickView }: MalachitePr
   return (
     <section className="py-20 sm:py-28 bg-[#FDF9F5] overflow-hidden border-b border-[#EDE4DC]">
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-        {/* Section header — identical theme to Most Loved Products */}
+     
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
           <ScrollReveal variant="fade-left">
             <div>
