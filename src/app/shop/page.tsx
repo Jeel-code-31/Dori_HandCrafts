@@ -7,11 +7,12 @@ import QuickViewModal, { QuickViewProduct } from '@/components/QuickViewModal';
 import { useLanguage } from '@/context/LanguageContext';
 import { SlidersHorizontal, X, LayoutGrid, Grid2x2, ChevronDown } from 'lucide-react';
 
-import { FALLBACK_MALACHITE_PRODUCTS } from '@/components/home/MalachiteProducts';
+import { FALLBACK_MALACHITE_PRODUCTS, FALLBACK_HAND_PAINTED_PRODUCTS } from '@/lib/fallbackProducts';
 
 // ─── Fallback categories ──────────────────────────────────────────────────────
 const FALLBACK_CATEGORIES = [
-  { id: 'malachite', slug: 'malachite', name: 'Malachite Products', _count: { products: 12 } },
+  { id: 'malachite', slug: 'malachite', name: 'Malachite Products', _count: { products: 11 } },
+  { id: 'hand-painted', slug: 'hand-painted', name: 'Hand-Painted Work', _count: { products: 10 } },
   { id: 'swing', slug: 'swing', name: 'Swings', _count: { products: 1 } },
   { id: 'hanging-lights', slug: 'hanging-lights', name: 'Hanging Lights', _count: { products: 1 } },
   { id: 'handbags', slug: 'handbags', name: 'Handbags', _count: { products: 1 } },
@@ -25,6 +26,7 @@ const FALLBACK_CATEGORIES = [
 // ─── Fallback products (one per category) — shown when DB is empty ─────────────
 const FALLBACK_PRODUCTS = [
   ...FALLBACK_MALACHITE_PRODUCTS,
+  ...FALLBACK_HAND_PAINTED_PRODUCTS,
   {
     id: 'fp-1', slug: 'macrame-wall-hanging-boho', name: 'Boho Wall Hanging',
     description: 'Hand-knotted macramé wall hanging crafted from 100% organic cotton cord by skilled rural artisans.',
@@ -142,13 +144,15 @@ function ShopContent() {
   // Reset visible count when filters change
   useEffect(() => { setVisibleCount(PAGE_SIZE); }, [selectedCategory, sortOption, maxPrice, inStockOnly, featuredParam, newArrivalParam, bestSellerParam]);
 
-  // Fetch products — include FALLBACK_MALACHITE_PRODUCTS if missing from DB
+  // Fetch products — include FALLBACK_MALACHITE_PRODUCTS & FALLBACK_HAND_PAINTED_PRODUCTS if missing from DB
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
       try {
         let url = `/api/products?sort=${sortOption}&maxPrice=${maxPrice}`;
-        if (selectedCategory && selectedCategory !== 'malachite') url += `&category=${selectedCategory}`;
+        if (selectedCategory && selectedCategory !== 'malachite' && selectedCategory !== 'hand-painted') {
+          url += `&category=${selectedCategory}`;
+        }
         if (featuredParam) url += `&featured=true`;
         if (newArrivalParam) url += `&newArrival=true`;
         if (bestSellerParam) url += `&bestSeller=true`;
@@ -157,11 +161,16 @@ function ShopContent() {
 
         let baseProducts = Array.isArray(data) && data.length > 0 ? data : FALLBACK_PRODUCTS;
 
-        // Ensure malachite fallback products are always merged
+        // Ensure malachite & hand-painted fallback products are always merged
         const combined = [...baseProducts];
         for (const malProd of FALLBACK_MALACHITE_PRODUCTS) {
           if (!combined.some((p: any) => p.id === malProd.id || p.slug === malProd.slug)) {
             combined.push(malProd);
+          }
+        }
+        for (const hpProd of FALLBACK_HAND_PAINTED_PRODUCTS) {
+          if (!combined.some((p: any) => p.id === hpProd.id || p.slug === hpProd.slug)) {
+            combined.push(hpProd);
           }
         }
         setProducts(combined);
@@ -175,7 +184,7 @@ function ShopContent() {
     fetchProducts();
   }, [selectedCategory, sortOption, maxPrice, featuredParam, newArrivalParam, bestSellerParam]);
 
-  // Fetch categories — ensure Malachite Products category is always available
+  // Fetch categories — ensure Malachite & Hand-Painted Work categories are always available
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -186,6 +195,12 @@ function ShopContent() {
         if (!cats.some((c: any) => c.slug === 'malachite')) {
           cats = [
             { id: 'malachite', slug: 'malachite', name: 'Malachite Products', _count: { products: FALLBACK_MALACHITE_PRODUCTS.length } },
+            ...cats,
+          ];
+        }
+        if (!cats.some((c: any) => c.slug === 'hand-painted')) {
+          cats = [
+            { id: 'hand-painted', slug: 'hand-painted', name: 'Hand-Painted Work', _count: { products: FALLBACK_HAND_PAINTED_PRODUCTS.length } },
             ...cats,
           ];
         }
@@ -207,7 +222,9 @@ function ShopContent() {
       const isMatch =
         catSlug === selectedCategory ||
         (selectedCategory === 'malachite' &&
-          (catSlug?.includes('malachite') || catName?.toLowerCase().includes('malachite')));
+          (catSlug?.includes('malachite') || catName?.toLowerCase().includes('malachite'))) ||
+        (selectedCategory === 'hand-painted' &&
+          (catSlug?.includes('hand-painted') || catName?.toLowerCase().includes('hand-painted') || catName?.toLowerCase().includes('hand painted')));
       if (!isMatch) return false;
     }
     // Filter by max price (client-side for fallback mode)

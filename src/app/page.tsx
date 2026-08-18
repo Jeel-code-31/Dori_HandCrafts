@@ -15,6 +15,7 @@ import Story from '@/components/Story';
 import CraftedYourWaySection from '@/components/home/CraftedYourWaySection';
 import TrustStrip from '@/components/home/TrustStrip';
 import MalachiteProducts from '@/components/home/MalachiteProducts';
+import HandPaintedProducts from '@/components/home/HandPaintedProducts';
 
 // Static fallback products — shown whenever the DB returns no data.
 // Uses the same Shopify CDN images already referenced in CollectionsSection.
@@ -205,6 +206,14 @@ export default function HomePage() {
       p.slug?.includes('malachite')
   );
 
+  const handPaintedProducts = products.filter(
+    (p) =>
+      p.category?.slug === 'hand-painted' ||
+      p.category?.name?.toLowerCase().includes('hand-painted') ||
+      p.category?.name?.toLowerCase().includes('hand painted') ||
+      p.slug?.includes('hand-painted')
+  );
+
   return (
     <div className="min-h-screen bg-[#FDF9F5]">
       {/* 1. Hero */}
@@ -215,6 +224,9 @@ export default function HomePage() {
 
       {/* Malachite Products (Just before Most Loved Products) */}
       <MalachiteProducts products={malachiteProducts.length > 0 ? malachiteProducts : undefined} onQuickView={setQuickViewProd} />
+
+      {/* Hand-Painted Work Section */}
+      <HandPaintedProducts products={handPaintedProducts.length > 0 ? handPaintedProducts : undefined} onQuickView={setQuickViewProd} />
 
       {/* 2. Curated Strip */}
       <CuratedStripSection products={products.slice(0, 8)} onQuickView={setQuickViewProd} />

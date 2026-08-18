@@ -9,7 +9,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useLanguage } from '@/context/LanguageContext';
 import ProductCard from '@/components/ProductCard';
-import { FALLBACK_MALACHITE_PRODUCTS } from '@/components/home/MalachiteProducts';
+import { ALL_FALLBACK_PRODUCTS } from '@/lib/fallbackProducts';
 
 export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
@@ -44,8 +44,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         if (res.ok) {
           foundProduct = await res.json();
         } else {
-          // Look up in fallback malachite products if not in DB
-          foundProduct = FALLBACK_MALACHITE_PRODUCTS.find(
+          // Look up in fallback products if not in DB
+          foundProduct = ALL_FALLBACK_PRODUCTS.find(
             (p: any) => p.slug === resolvedParams.slug || p.id === resolvedParams.slug
           );
         }
@@ -79,10 +79,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             if (Array.isArray(relData) && relData.length > 1) {
               setRelated(relData.filter((p: any) => p.id !== enrichedProduct.id).slice(0, 4));
             } else {
-              setRelated(FALLBACK_MALACHITE_PRODUCTS.filter((p: any) => p.id !== enrichedProduct.id).slice(0, 4));
+              setRelated(ALL_FALLBACK_PRODUCTS.filter((p: any) => p.id !== enrichedProduct.id).slice(0, 4));
             }
           } catch {
-            setRelated(FALLBACK_MALACHITE_PRODUCTS.filter((p: any) => p.id !== enrichedProduct.id).slice(0, 4));
+            setRelated(ALL_FALLBACK_PRODUCTS.filter((p: any) => p.id !== enrichedProduct.id).slice(0, 4));
           }
         }
       } catch (e) {

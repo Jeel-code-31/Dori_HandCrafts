@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query, queryOne, execute } from '@/lib/db';
-import { FALLBACK_MALACHITE_PRODUCTS } from '@/components/home/MalachiteProducts';
+import { ALL_FALLBACK_PRODUCTS } from '@/lib/fallbackProducts';
 
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
@@ -12,8 +12,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     );
 
     if (!product) {
-      // Check fallback malachite products
-      const fallbackItem = FALLBACK_MALACHITE_PRODUCTS.find(
+      // Check fallback products (malachite & hand-painted)
+      const fallbackItem = ALL_FALLBACK_PRODUCTS.find(
         (p: any) => p.slug === slug || p.id === slug
       );
 
