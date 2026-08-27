@@ -5,69 +5,72 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Package, Ruler, Heart, Star } from 'lucide-react';
 import ScrollReveal from '@/components/home/ScrollReveal';
-
-const features = [
-  {
-    icon: Package,
-    title: 'Custom Colors',
-    desc: 'Pick the colors that match your home aesthetic perfectly.',
-  },
-  {
-    icon: Ruler,
-    title: 'Size Personalization',
-    desc: 'Made exactly for your space with the perfect dimensions.',
-  },
-  {
-    icon: Heart,
-    title: 'Handmade With Care',
-    desc: 'Every knot is crafted by skilled women artisans with love.',
-  },
-  {
-    icon: Star,
-    title: 'Unique Designs',
-    desc: 'From patterns to details, create one-of-a-kind macramé pieces.',
-  },
-];
-
-const badges = [
-  {
-    label: 'Made For You',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth={1.4}>
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-      </svg>
-    ),
-  },
-  {
-    label: '100% Handmade',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth={1.4}>
-        <circle cx="12" cy="12" r="10" />
-        <path d="M8 12l2.5 2.5L16 9" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Women Artisan Crafted',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth={1.4}>
-        <circle cx="12" cy="7" r="4" />
-        <path d="M5.5 21a7 7 0 0 1 13 0" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Custom Orders Available',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth={1.4}>
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <path d="M8 12h8M12 8v8" />
-      </svg>
-    ),
-  },
-];
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CraftedYourWaySection() {
+  const { t } = useLanguage();
+
+  const features = [
+    {
+      icon: Package,
+      title: t('crafted.customColors'),
+      desc: t('crafted.customColorsDesc'),
+    },
+    {
+      icon: Ruler,
+      title: t('crafted.sizePersonalization'),
+      desc: t('crafted.sizePersonalizationDesc'),
+    },
+    {
+      icon: Heart,
+      title: t('crafted.handmadeCare'),
+      desc: t('crafted.handmadeCareDesc'),
+    },
+    {
+      icon: Star,
+      title: t('crafted.uniqueDesigns'),
+      desc: t('crafted.uniqueDesignsDesc'),
+    },
+  ];
+
+  const badges = [
+    {
+      label: t('trust.handmade'),
+      svg: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth={1.4}>
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+        </svg>
+      ),
+    },
+    {
+      label: '100% Handmade',
+      svg: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth={1.4}>
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 12l2.5 2.5L16 9" />
+        </svg>
+      ),
+    },
+    {
+      label: t('trust.handmadeSub'),
+      svg: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth={1.4}>
+          <circle cx="12" cy="7" r="4" />
+          <path d="M5.5 21a7 7 0 0 1 13 0" />
+        </svg>
+      ),
+    },
+    {
+      label: t('crafted.customizeNow'),
+      svg: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth={1.4}>
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M8 12h8M12 8v8" />
+        </svg>
+      ),
+    },
+  ];
+
   return (
     <section className="py-20 sm:py-28 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
@@ -91,9 +94,9 @@ export default function CraftedYourWaySection() {
               {/* Badge strip — bottom of image */}
               <div className="absolute bottom-0 left-0 right-0 px-5 py-5">
                 <div className="grid grid-cols-4 divide-x divide-white/20 bg-white/10 backdrop-blur-sm border border-white/15">
-                  {badges.map((badge) => (
+                  {badges.map((badge, idx) => (
                     <div
-                      key={badge.label}
+                      key={idx}
                       className="flex flex-col items-center gap-1.5 py-4 px-2 text-white hover:bg-white/10 transition-colors duration-300"
                     >
                       <span className="text-white/90">{badge.svg}</span>
@@ -112,13 +115,13 @@ export default function CraftedYourWaySection() {
             {/* Heading block */}
             <ScrollReveal variant="fade-up">
               <span className="text-[10px] uppercase tracking-[0.35em] text-[#C8956A] font-bold block mb-3">
-                Custom Creations
+                {t('crafted.uniqueDesigns')}
               </span>
               <h2 className="font-editorial text-4xl sm:text-5xl text-[#2C2420] leading-tight mb-4">
                 Crafted <em className="not-italic text-[#C8956A]">Your Way</em>
               </h2>
               <p className="text-sm text-[#7A6F65] leading-relaxed font-light max-w-md">
-                Choose your size, color, pattern and style — handcrafted specially for you by our skilled women artisans.
+                {t('crafted.customColorsDesc')}
               </p>
             </ScrollReveal>
 
@@ -158,7 +161,7 @@ export default function CraftedYourWaySection() {
                 href="/contact"
                 className="btn-animate text-xs font-bold uppercase tracking-[0.25em] px-10 py-4 inline-block self-start hover:scale-[1.02] active:scale-[0.98] transition-transform duration-300"
               >
-                Customize Now
+                {t('crafted.customizeNow')}
               </Link>
             </ScrollReveal>
           </div>

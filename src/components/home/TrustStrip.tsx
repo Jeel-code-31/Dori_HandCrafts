@@ -2,31 +2,34 @@
 
 import React from 'react';
 import { Truck, Scissors, ShieldCheck, Headphones } from 'lucide-react';
-
-const strips = [
-  {
-    Icon: Truck,
-    label: 'Shipping',
-    sub: 'Free above ₹999',
-  },
-  {
-    Icon: Scissors,
-    label: 'Handmade',
-    sub: 'Made by Women Artisans',
-  },
-  {
-    Icon: ShieldCheck,
-    label: 'Secured Payments',
-    sub: '100% Safe Payments',
-  },
-  {
-    Icon: Headphones,
-    label: 'Contact Us',
-    sub: 'support@dorihandcrafts.com',
-  },
-];
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function TrustStrip() {
+  const { t } = useLanguage();
+
+  const strips = [
+    {
+      Icon: Truck,
+      label: t('trust.shipping'),
+      sub: t('trust.freeShipping'),
+    },
+    {
+      Icon: Scissors,
+      label: t('trust.handmade'),
+      sub: t('trust.handmadeSub'),
+    },
+    {
+      Icon: ShieldCheck,
+      label: t('trust.secured'),
+      sub: t('trust.securedSub'),
+    },
+    {
+      Icon: Headphones,
+      label: t('trust.contact'),
+      sub: 'support@dorihandcrafts.com',
+    },
+  ];
+
   return (
     <div className="bg-[#FDF9F5] border-y border-[#EDE4DC]">
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
@@ -35,7 +38,6 @@ export default function TrustStrip() {
             <div
               key={label}
               className={`group flex items-center gap-4 px-6 py-5 sm:py-6 transition-colors duration-300 hover:bg-white ${
-                // hide border between col-2 and col-3 on mobile (they're in separate rows)
                 idx === 1 ? 'border-r border-[#EDE4DC] lg:border-r-0' : ''
               }`}
             >

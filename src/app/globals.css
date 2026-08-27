@@ -407,3 +407,28 @@ a.btn-animate-light:hover svg {
     transform: none !important;
   }
 }
+
+/* ── Google Translate UI Overrides ── */
+body {
+  top: 0px !important;
+  position: static !important;
+}
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.goog-te-spinner-pos,
+.goog-te-gadget-icon,
+.goog-te-gadget-simple img {
+  display: none !important;
+}
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+#google_translate_element {
+  display: none !important;
+}
+.skiptranslate {
+  font-family: inherit !important;
+}
+
