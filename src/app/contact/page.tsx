@@ -55,7 +55,7 @@ export default function ContactPage() {
             <div className="space-y-4 text-xs">
               <div className="flex items-center space-x-3">
                 <Mail size={16} className="text-[#D9C5B2]" />
-                <span>hello@studio-dori.com</span>
+                <span>hello@zizziq.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone size={16} className="text-[#D9C5B2]" />
@@ -63,7 +63,7 @@ export default function ContactPage() {
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin size={16} className="text-[#D9C5B2]" />
-                <span>Studio Dori Handcrafts, Crafts Pavilion, Jaipur, Rajasthan, India</span>
+                <span>Zizziq Handcrafts, Crafts Pavilion, Jaipur, Rajasthan, India</span>
               </div>
             </div>
           </div>

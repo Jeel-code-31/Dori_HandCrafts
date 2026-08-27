@@ -218,7 +218,6 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#FDF9F5]">
       {/* 1. Hero */}
       <HeroSection />
-      <Story />
       {/* Trust strip */}
       <TrustStrip />
 
@@ -251,9 +250,6 @@ export default function HomePage() {
 
       {/* 8. Craft Story */}
       <CraftStorySection />
-
-      {/* 9. Journal */}
-      <JournalSection />
 
       {/* Quick View Modal */}
       <QuickViewModal product={quickViewProd} onClose={() => setQuickViewProd(null)} />

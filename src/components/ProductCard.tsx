@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, Eye, ShoppingBag } from 'lucide-react';
+import { Heart, Eye, MessageCircle } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
-import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { openWhatsAppInquiry } from '@/lib/whatsapp';
 
 export interface ProductCardProps {
   product: {
@@ -28,7 +28,6 @@ export interface ProductCardProps {
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { toggleWishlist, isInWishlist } = useWishlist();
-  const { addToCart } = useCart();
   const { t } = useLanguage();
 
   const imgList = Array.isArray(product.images) ? product.images : [];
@@ -172,20 +171,20 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           </div>
 
           <button
-            onClick={() =>
-              addToCart({
-                productId: product.id,
-                name: product.name,
+            onClick={(e) => {
+              e.preventDefault();
+              openWhatsAppInquiry({
+                productName: product.name,
+                productSlug: product.slug,
                 price: product.price,
-                image: primaryImg,
-                quantity: 1,
-              })
-            }
-            className="btn-animate text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 flex items-center space-x-1.5 shrink-0 shadow-2xs"
-            title={t('shop.addToCart')}
+                quantity: 25,
+              });
+            }}
+            className="btn-animate text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 flex items-center space-x-1.5 shrink-0 shadow-2xs bg-[#25D366] text-white border-none hover:bg-[#128C7E]"
+            title="MOQ Inquiry via WhatsApp"
           >
-            <ShoppingBag size={14} />
-            <span>+ Cart</span>
+            <MessageCircle size={14} />
+            <span>MOQ</span>
           </button>
         </div>
       </div>

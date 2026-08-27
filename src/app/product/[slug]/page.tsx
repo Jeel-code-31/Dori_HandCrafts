@@ -4,10 +4,10 @@ import React, { useState, useEffect, use } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Star, Heart, ShoppingBag, Plus, Minus, Check, ShieldCheck, Truck, RotateCcw, Maximize2, X } from 'lucide-react';
-import { useCart } from '@/context/CartContext';
+import { Star, Heart, MessageCircle, Plus, Minus, Check, ShieldCheck, Truck, RotateCcw, Maximize2, X } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { openWhatsAppInquiry } from '@/lib/whatsapp';
 import ProductCard from '@/components/ProductCard';
 import { ALL_FALLBACK_PRODUCTS } from '@/lib/fallbackProducts';
 
@@ -15,7 +15,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
   const resolvedParams = use(params);
   const router = useRouter();
   const { t } = useLanguage();
-  const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
   const [product, setProduct] = useState<any>(null);
@@ -24,7 +23,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
   const [selectedImgIdx, setSelectedImgIdx] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(25);
   const [activeTab, setActiveTab] = useState<'details' | 'materials' | 'care' | 'shipping' | 'reviews'>('details');
   const [fullscreenImg, setFullscreenImg] = useState<string | null>(null);
 
@@ -114,21 +113,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
   const inWishlist = isInWishlist(product.id);
   const images = product.images || [];
 
-  const handleAddToCart = () => {
-    addToCart({
-      productId: product.id,
-      name: product.name,
+  const handleWhatsAppInquiry = () => {
+    openWhatsAppInquiry({
+      productName: product.name,
+      productSlug: product.slug,
       price: currentPrice,
-      image: getImageUrl(images[0]),
-      variantId: selectedVariant?.id,
-      variantName: selectedVariant?.name,
       quantity,
+      variantName: selectedVariant?.name,
     });
-  };
-
-  const handleBuyNow = () => {
-    handleAddToCart();
-    router.push('/checkout');
   };
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
@@ -239,15 +231,21 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               </div>
 
               {/* Price */}
-              <div className="flex items-baseline space-x-4 mb-4">
-                <span className="font-editorial text-3xl font-bold text-[#2C2420]">
-                  ₹{currentPrice.toLocaleString('en-IN')}
-                </span>
-                {product.compareAtPrice && (
-                  <span className="text-base text-[#8C8378] line-through">
-                    ₹{product.compareAtPrice.toLocaleString('en-IN')}
+              <div className="flex flex-col space-y-1 mb-4">
+                <div className="flex items-baseline space-x-4">
+                  <span className="font-editorial text-3xl font-bold text-[#2C2420]">
+                    ₹{(currentPrice * quantity).toLocaleString('en-IN')}
                   </span>
-                )}
+                  {product.compareAtPrice && (
+                    <span className="text-base text-[#8C8378] line-through">
+                      ₹{(product.compareAtPrice * quantity).toLocaleString('en-IN')}
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs text-[#8C8378]">
+                  <span>Unit Price: ₹{currentPrice.toLocaleString('en-IN')} / piece</span>
+                  <span className="ml-2 font-semibold text-[#2C2420]">(Min. MOQ: 25)</span>
+                </div>
               </div>
 
               <p className="text-xs text-[#8C8378] leading-relaxed font-light mb-6">
@@ -286,7 +284,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               </span>
               <div className="flex items-center border border-[#D9C5B2] bg-[#F9F7F2]">
                 <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  onClick={() => setQuantity(Math.max(25, quantity - 1))}
                   className="p-2 text-[#2C2420] hover:bg-[#D9C5B2]/30"
                 >
                   <Minus size={14} />
@@ -305,11 +303,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             <div className="space-y-3 pt-4 border-t border-[#D9C5B2]">
               <div className="flex space-x-3">
                 <button
-                  onClick={handleAddToCart}
-                  className="flex-1 btn-animate text-xs font-bold uppercase tracking-widest py-4 flex items-center justify-center space-x-2 transition-colors"
+                  onClick={handleWhatsAppInquiry}
+                  className="flex-1 btn-animate text-xs font-bold uppercase tracking-widest py-4 flex items-center justify-center space-x-2 transition-colors bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-md"
                 >
-                  <ShoppingBag size={16} />
-                  <span>{t('shop.addToCart')}</span>
+                  <MessageCircle size={18} />
+                  <span>Inquire MOQ on WhatsApp</span>
                 </button>
 
                 <button
@@ -327,17 +325,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                       ? 'border-red-600 text-red-600 bg-red-50'
                       : 'border-[#D9C5B2] text-[#2C2420]'
                   }`}
+                  aria-label="Wishlist"
                 >
                   <Heart size={18} fill={inWishlist ? 'currentColor' : 'none'} />
                 </button>
               </div>
-
-              <button
-                onClick={handleBuyNow}
-                className="w-full btn-animate text-xs font-bold uppercase tracking-widest py-4 transition-colors"
-              >
-                {t('pdp.buyNow')}
-              </button>
             </div>
 
             {/* Trust Badges */}
@@ -523,17 +515,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
       {/* Mobile Sticky Bottom Action Bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#F9F7F2]/95 backdrop-blur-md border-t border-[#D9C5B2] p-3 px-4 shadow-2xl flex items-center justify-between gap-4">
         <div>
-          <span className="text-[10px] uppercase tracking-widest text-[#8C8378] block font-bold">Total</span>
+          <span className="text-[10px] uppercase tracking-widest text-[#8C8378] block font-bold">Total Est. ({quantity} pcs)</span>
           <span className="font-editorial text-lg font-bold text-[#2C2420]">
-            ₹{currentPrice.toLocaleString('en-IN')}
+            ₹{(currentPrice * quantity).toLocaleString('en-IN')}
           </span>
         </div>
         <button
-          onClick={handleAddToCart}
-          className="flex-1 btn-animate text-xs font-bold uppercase tracking-widest py-3 flex items-center justify-center space-x-2"
+          onClick={handleWhatsAppInquiry}
+          className="flex-1 btn-animate text-xs font-bold uppercase tracking-widest py-3 flex items-center justify-center space-x-2 bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-md"
         >
-          <ShoppingBag size={16} />
-          <span>{t('shop.addToCart')}</span>
+          <MessageCircle size={16} />
+          <span>Inquire MOQ</span>
         </button>
       </div>
 

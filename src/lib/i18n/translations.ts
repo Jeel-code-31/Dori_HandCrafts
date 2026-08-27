@@ -71,7 +71,7 @@ export const translations: Record<Language, any> = {
       craftStoryEyebrow: 'Our Philosophy',
       craftStoryTitleLine: 'Woven by Hands,',
       craftStoryTitleAccent: 'Inspired by Heritage',
-      craftStoryDescription: 'Every Studio Dori creation empowers rural women artisans through fair wages, sustainable organic materials, and centuries-old weaving traditions.',
+      craftStoryDescription: 'Every Zizziq creation empowers rural women artisans through fair wages, sustainable organic materials, and centuries-old weaving traditions.',
       craftStoryValue1: 'Fair trade wages for every artisan',
       craftStoryValue2: 'Sustainably sourced organic materials',
       craftStoryValue3: 'Centuries-old weaving traditions',
@@ -98,7 +98,7 @@ export const translations: Record<Language, any> = {
       footerNewsletter: 'Join our world of handmade living.',
       footerNewsletterSub: 'Receive private invitations to new collections and artisan stories.',
       footerSubscribe: 'SUBSCRIBE',
-      footerCopyright: '© 2026 Studio Dori. All rights reserved. Handcrafted with precision.',
+      footerCopyright: '© 2026 Zizziq. All rights reserved. Handcrafted with precision.',
     },
     shop: {
       title: 'Product Catalog',
@@ -233,7 +233,7 @@ export const translations: Record<Language, any> = {
       logout: 'Sign Out',
     },
     admin: {
-      portalTitle: 'Studio Dori — Admin Command Center',
+      portalTitle: 'Zizziq — Admin Command Center',
       totalSales: 'Total Revenue',
       totalOrders: 'Total Orders',
       totalProducts: 'Active Products',
@@ -272,7 +272,7 @@ export const translations: Record<Language, any> = {
       newsletterTitle: 'Join our world of handmade living.',
       newsletterSub: 'Receive private invitations to new collections and artisan stories.',
       subscribe: 'SUBSCRIBE',
-      copyright: '© 2026 Studio Dori. All rights reserved. Handcrafted with precision.',
+      copyright: '© 2026 Zizziq. All rights reserved. Handcrafted with precision.',
     },
   },
   ja: {
@@ -426,7 +426,7 @@ export const translations: Record<Language, any> = {
       logout: 'ログアウト',
     },
     admin: {
-      portalTitle: 'Studio Dori — 管理ダッシュボード',
+      portalTitle: 'Zizziq — 管理ダッシュボード',
       totalSales: '総売上高',
       totalOrders: '総注文数',
       totalProducts: '出品商品数',
@@ -465,7 +465,7 @@ export const translations: Record<Language, any> = {
       newsletterTitle: '手仕事のある暮らしの便りを届ける。',
       newsletterSub: '新作コレクションや職人の物語をメールでお届けします。',
       subscribe: '登録する',
-      copyright: '© 2026 Studio Dori. All rights reserved.',
+      copyright: '© 2026 Zizziq. All rights reserved.',
     },
   },
   fr: {
@@ -619,7 +619,7 @@ export const translations: Record<Language, any> = {
       logout: 'Déconnexion',
     },
     admin: {
-      portalTitle: 'Studio Dori — Centre de Gestion Admin',
+      portalTitle: 'Zizziq — Centre de Gestion Admin',
       totalSales: 'Revenu Total',
       totalOrders: 'Commandes Totales',
       totalProducts: 'Produits Actifs',
@@ -658,7 +658,7 @@ export const translations: Record<Language, any> = {
       newsletterTitle: 'Rejoignez notre univers fait main.',
       newsletterSub: 'Recevez nos invitations exclusives et histoires d\'artisans.',
       subscribe: 'S\'ABONNER',
-      copyright: '© 2026 Studio Dori. Tous droits réservés.',
+      copyright: '© 2026 Zizziq. Tous droits réservés.',
     },
   },
   de: {
@@ -812,7 +812,7 @@ export const translations: Record<Language, any> = {
       logout: 'Abmelden',
     },
     admin: {
-      portalTitle: 'Studio Dori — Admin Portal',
+      portalTitle: 'Zizziq — Admin Portal',
       totalSales: 'Gesamtertrag',
       totalOrders: 'Bestellungen',
       totalProducts: 'Aktive Produkte',
@@ -851,7 +851,7 @@ export const translations: Record<Language, any> = {
       newsletterTitle: 'Werden Sie Teil unserer Community.',
       newsletterSub: 'Erhalten Sie exklusive Einladungen zu neuen Kollektionen.',
       subscribe: 'ABONNIEREN',
-      copyright: '© 2026 Studio Dori. Alle Rechte vorbehalten.',
+      copyright: '© 2026 Zizziq. Alle Rechte vorbehalten.',
     },
   },
   es: {
@@ -1005,7 +1005,7 @@ export const translations: Record<Language, any> = {
       logout: 'Cerrar Sesión',
     },
     admin: {
-      portalTitle: 'Studio Dori — Panel de Administración',
+      portalTitle: 'Zizziq — Panel de Administración',
       totalSales: 'Ingresos Totales',
       totalOrders: 'Pedidos Totales',
       totalProducts: 'Productos Activos',
@@ -1044,7 +1044,7 @@ export const translations: Record<Language, any> = {
       newsletterTitle: 'Únete a nuestro universo artesanal.',
       newsletterSub: 'Recibe invitaciones exclusivas y relatos artesanales.',
       subscribe: 'SUSCRIBIRSE',
-      copyright: '© 2026 Studio Dori. Todos los derechos reservados.',
+      copyright: '© 2026 Zizziq. Todos los derechos reservados.',
     },
   },
 };

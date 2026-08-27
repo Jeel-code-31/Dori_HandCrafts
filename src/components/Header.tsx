@@ -3,32 +3,46 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, ShoppingBag, Heart, User, Menu, X, Globe, ChevronDown, Check } from 'lucide-react';
+import { Search, Heart, User, Menu, X, Globe, ChevronDown, Check, MousePointerClick, LogIn } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { SUPPORTED_LANGUAGES, Language } from '@/lib/i18n/translations';
-import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/context/AuthContext';
 import SearchOverlay from './SearchOverlay';
+import LoginSection from './LoginSection';
+import { getClickCount } from '@/lib/login';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [loginPopoverOpen, setLoginPopoverOpen] = useState(false);
+  const [liveClickCount, setLiveClickCount] = useState<number>(0);
 
   const pathname = usePathname();
   const { lang, setLang, t } = useLanguage();
-  const { openCart, totalItems } = useCart();
   const { openWishlist, wishlist } = useWishlist();
   const { user, isAdmin } = useAuth();
 
   const langDropdownRef = useRef<HTMLDivElement>(null);
+  const loginPopoverRef = useRef<HTMLDivElement>(null);
 
-  // Close language dropdown on outside click
+  // Sync live click count
+  useEffect(() => {
+    setLiveClickCount(getClickCount());
+    const handleUpdate = () => setLiveClickCount(getClickCount());
+    window.addEventListener('dori_click_tracker_updated', handleUpdate);
+    return () => window.removeEventListener('dori_click_tracker_updated', handleUpdate);
+  }, []);
+
+  // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
         setLangDropdownOpen(false);
+      }
+      if (loginPopoverRef.current && !loginPopoverRef.current.contains(event.target as Node)) {
+        setLoginPopoverOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -41,7 +55,6 @@ export default function Header() {
     { href: '/shop', label: t('nav.shop') },
     { href: '/collections', label: t('nav.collections') },
     { href: '/about', label: t('nav.about') },
-    { href: '/journal', label: t('blog') },
   ];
 
   return (
@@ -60,7 +73,7 @@ export default function Header() {
 
             <Link href="/" className="group flex flex-col justify-center">
               <span className="font-editorial text-2xl sm:text-3xl tracking-wider text-[#2C2420] font-semibold leading-none">
-                STUDIO DORI
+                ZIZZIQ
               </span>
               <span className="text-[9px] tracking-[0.25em] text-[#8C8378] uppercase mt-1 group-hover:text-[#2C2420] transition-colors leading-none">
                 Handcrafted Living
@@ -68,7 +81,7 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* CENTER: Desktop Navigation Links (Aligned Perfectly) */}
+          {/* CENTER: Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
               <Link
@@ -145,11 +158,12 @@ export default function Header() {
               )}
             </div>
 
-            {/* Wishlist Button */}
+            {/* Wishlist Button (Like Section) */}
             <button
               onClick={openWishlist}
               className="p-2 hover:text-[#8C8378] hover:bg-[#D9C5B2]/20 rounded-full transition-all relative"
-              aria-label="Wishlist"
+              aria-label="Wishlist (Like Section)"
+              title="Like Section / Wishlist"
             >
               <Heart size={20} />
               {wishlist.length > 0 && (
@@ -159,33 +173,51 @@ export default function Header() {
               )}
             </button>
 
-            {/* User Account Link */}
-            <Link
-              href={user ? (isAdmin ? '/admin' : '/account') : '/account/login'}
-              className="p-2 hover:text-[#8C8378] hover:bg-[#D9C5B2]/20 rounded-full transition-all flex items-center space-x-1"
-              title={user ? user.name : t('nav.account')}
-            >
-              <User size={20} />
-              {isAdmin && (
-                <span className="hidden md:inline-block text-[10px] bg-[#D9C5B2] text-[#2C2420] font-bold px-1.5 py-0.5 uppercase tracking-wider rounded-xs ml-1">
-                  Admin
+            {/* LOGIN BUTTON PLACED JUST BESIDE LIKE SECTION */}
+            <div className="relative" ref={loginPopoverRef}>
+              <button
+                onClick={() => setLoginPopoverOpen(!loginPopoverOpen)}
+                className={`p-2 rounded-full transition-all relative flex items-center space-x-1 border ${
+                  loginPopoverOpen
+                    ? 'border-[#2C2420] bg-[#2C2420] text-[#F9F7F2]'
+                    : 'border-[#D9C5B2] hover:border-[#2C2420] hover:bg-[#D9C5B2]/20 text-[#2C2420]'
+                }`}
+                title="Login & Click Tracker (Beside Like Section)"
+                aria-label="Login Section"
+              >
+                <User size={20} />
+                <span className="text-[10px] font-bold uppercase tracking-wider hidden sm:inline-block">
+                  {user ? 'Logged In' : 'Login'}
                 </span>
-              )}
-            </Link>
+                {liveClickCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#2C2420] text-[#F9F7F2] border border-[#F9F7F2] text-[9px] min-w-4 h-4 px-1 rounded-full flex items-center justify-center font-bold">
+                    {liveClickCount}
+                  </span>
+                )}
+              </button>
 
-            {/* Cart Drawer Button */}
-            <button
-              onClick={openCart}
-              className="p-2 hover:text-[#8C8378] hover:bg-[#D9C5B2]/20 rounded-full transition-all relative flex items-center"
-              aria-label="Cart"
-            >
-              <ShoppingBag size={20} />
-              {totalItems > 0 && (
-                <span className="absolute top-0 right-0 bg-[#2C2420] text-[#F9F7F2] text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                  {totalItems}
-                </span>
+              {/* Login & Counter Popover beside Like Section */}
+              {loginPopoverOpen && (
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#F9F7F2] border border-[#D9C5B2] shadow-2xl z-50 animate-fade-in rounded-xs overflow-hidden">
+                  <div className="bg-[#2C2420] text-[#F9F7F2] p-3 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <LogIn size={16} />
+                      <span className="text-xs font-bold uppercase tracking-wider">
+                        Login & Click Tracker
+                      </span>
+                    </div>
+                    <Link
+                      href="/account/login"
+                      onClick={() => setLoginPopoverOpen(false)}
+                      className="text-[10px] text-[#D9C5B2] hover:text-white underline font-semibold"
+                    >
+                      Full Page
+                    </Link>
+                  </div>
+                  <LoginSection compact onSuccess={() => setLoginPopoverOpen(false)} />
+                </div>
               )}
-            </button>
+            </div>
           </div>
         </div>
       </header>
@@ -195,7 +227,7 @@ export default function Header() {
         <div className="fixed inset-0 z-50 flex flex-col bg-[#F9F7F2] p-6 animate-fade-in">
           <div className="flex items-center justify-between pb-6 border-b border-[#D9C5B2]">
             <Link href="/" onClick={() => setMobileMenuOpen(false)} className="font-editorial text-2xl text-[#2C2420]">
-              STUDIO DORI
+              ZIZZIQ
             </Link>
             <button
               onClick={() => setMobileMenuOpen(false)}

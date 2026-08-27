@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { X, Star, Heart, ShoppingBag, Plus, Minus, ArrowRight } from 'lucide-react';
-import { useCart } from '@/context/CartContext';
+import { X, Star, Heart, MessageCircle, Plus, Minus, ArrowRight } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { openWhatsAppInquiry } from '@/lib/whatsapp';
 
 export interface QuickViewProduct {
   id: string;
@@ -28,14 +28,13 @@ export default function QuickViewModal({
   onClose: () => void;
 }) {
   const { t } = useLanguage();
-  const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants && product.variants.length > 0 ? product.variants[0] : null
   );
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(25);
 
   if (!product) return null;
 
@@ -43,15 +42,13 @@ export default function QuickViewModal({
   const currentPrice = selectedVariant?.price || product.price;
   const inWishlist = isInWishlist(product.id);
 
-  const handleAddToCart = () => {
-    addToCart({
-      productId: product.id,
-      name: product.name,
+  const handleWhatsAppInquiry = () => {
+    openWhatsAppInquiry({
+      productName: product.name,
+      productSlug: product.slug,
       price: currentPrice,
-      image: getImageUrl(product.images[0]),
-      variantId: selectedVariant?.id,
-      variantName: selectedVariant?.name,
       quantity,
+      variantName: selectedVariant?.name,
     });
     onClose();
   };
@@ -119,15 +116,21 @@ export default function QuickViewModal({
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline space-x-3 mb-4">
-              <span className="font-editorial text-2xl font-bold text-[#2C2420]">
-                ₹{currentPrice.toLocaleString('en-IN')}
-              </span>
-              {product.compareAtPrice && (
-                <span className="text-sm text-[#8C8378] line-through">
-                  ₹{product.compareAtPrice.toLocaleString('en-IN')}
+            <div className="flex flex-col space-y-1 mb-4">
+              <div className="flex items-baseline space-x-3">
+                <span className="font-editorial text-2xl font-bold text-[#2C2420]">
+                  ₹{(currentPrice * quantity).toLocaleString('en-IN')}
                 </span>
-              )}
+                {product.compareAtPrice && (
+                  <span className="text-sm text-[#8C8378] line-through">
+                    ₹{(product.compareAtPrice * quantity).toLocaleString('en-IN')}
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-[#8C8378]">
+                <span>Unit Price: ₹{currentPrice.toLocaleString('en-IN')} / piece</span>
+                <span className="ml-2 font-semibold text-[#2C2420]">(Min. MOQ: 25)</span>
+              </div>
             </div>
 
             <p className="text-xs text-[#8C8378] leading-relaxed mb-6">
@@ -165,7 +168,7 @@ export default function QuickViewModal({
               </span>
               <div className="flex items-center border border-[#D9C5B2] bg-[#F9F7F2]">
                 <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  onClick={() => setQuantity(Math.max(25, quantity - 1))}
                   className="p-2 text-[#2C2420] hover:bg-[#D9C5B2]/30"
                 >
                   <Minus size={14} />
@@ -185,11 +188,11 @@ export default function QuickViewModal({
           <div className="space-y-3 pt-4 border-t border-[#D9C5B2]">
             <div className="flex space-x-3">
               <button
-                onClick={handleAddToCart}
-                className="flex-1 btn-animate text-xs font-bold uppercase tracking-widest py-3.5 flex items-center justify-center space-x-2 transition-colors"
+                onClick={handleWhatsAppInquiry}
+                className="flex-1 btn-animate text-xs font-bold uppercase tracking-widest py-3.5 flex items-center justify-center space-x-2 transition-colors bg-[#25D366] text-white hover:bg-[#128C7E] border-none shadow-sm"
               >
-                <ShoppingBag size={16} />
-                <span>{t('shop.addToCart')}</span>
+                <MessageCircle size={16} />
+                <span>Inquire MOQ</span>
               </button>
 
               <button

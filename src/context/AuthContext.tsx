@@ -5,9 +5,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 export interface UserProfile {
   id: string;
   email: string;
+  username?: string;
   name: string;
   role: 'USER' | 'ADMIN';
   phone?: string;
+  userCountIndex?: number;
 }
 
 interface AuthContextType {

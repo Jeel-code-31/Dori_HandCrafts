@@ -29,7 +29,7 @@ export default function JournalPage() {
       title: 'Caring for Organic Macrame and Handloom Textiles',
       category: 'Care Guide',
       date: 'July 10, 2026',
-      author: 'Studio Dori',
+      author: 'Zizziq',
       excerpt: 'Simple timeless care guidelines to ensure your handcrafted wall tapestries and cushions last for decades.',
       image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=1200&q=80',
     },

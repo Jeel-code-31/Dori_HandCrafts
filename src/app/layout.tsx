@@ -6,11 +6,10 @@ import { CartProvider } from '@/context/CartContext';
 import { WishlistProvider } from '@/context/WishlistContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import CartDrawer from '@/components/CartDrawer';
 import WishlistDrawer from '@/components/WishlistDrawer';
 
 export const metadata: Metadata = {
-  title: 'Studio Dori — Premium Handcrafted Living & Artisan Decor',
+  title: 'Zizziq — Premium Handcrafted Living & Artisan Decor',
   description: 'Luxury handmade macrame swings, wall tapestries, bamboo lighting, and woven decor crafted by women artisan collectives.',
   keywords: 'handmade, macrame swing, wall hanging, artisan decor, japanese wabi sabi, luxury indian craft',
 };
@@ -30,7 +29,6 @@ export default function RootLayout({
                 <Header />
                 <main className="min-h-screen">{children}</main>
                 <Footer />
-                <CartDrawer />
                 <WishlistDrawer />
               </WishlistProvider>
             </CartProvider>

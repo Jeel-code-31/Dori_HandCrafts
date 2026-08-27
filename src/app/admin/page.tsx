@@ -5,14 +5,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { Package, ShoppingBag, DollarSign, AlertTriangle, Plus, Edit, Trash2, CheckCircle, RefreshCw } from 'lucide-react';
+import { Package, ShoppingBag, DollarSign, AlertTriangle, Plus, Edit, Trash2, CheckCircle, RefreshCw, FileSpreadsheet } from 'lucide-react';
+import ExcelDataSheet from '@/components/ExcelDataSheet';
 
 export default function AdminDashboardPage() {
   const { user, isAdmin } = useAuth();
   const { t } = useLanguage();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'coupons'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'excel'>('overview');
 
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
@@ -181,6 +182,15 @@ export default function AdminDashboardPage() {
           >
             {t('admin.navOrders')} ({orders.length})
           </button>
+          <button
+            onClick={() => setActiveTab('excel')}
+            className={`pb-3 border-b-2 transition-all flex items-center space-x-1.5 ${
+              activeTab === 'excel' ? 'border-[#107C41] text-[#107C41]' : 'border-transparent text-[#8C8378]'
+            }`}
+          >
+            <FileSpreadsheet size={14} />
+            <span>MOQ Data Sheet (Excel)</span>
+          </button>
         </div>
 
         {/* Overview Tab */}
@@ -325,6 +335,13 @@ export default function AdminDashboardPage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* MOQ Data Sheet (Excel) Tab */}
+        {activeTab === 'excel' && (
+          <div className="space-y-4">
+            <ExcelDataSheet isFullPage={true} />
           </div>
         )}
 

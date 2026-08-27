@@ -5541,7 +5541,7 @@ async function ensureInitialized() {
         excerpt TEXT NOT NULL,
         content TEXT NOT NULL,
         image TEXT NOT NULL,
-        author VARCHAR(255) DEFAULT 'Studio Dori',
+        author VARCHAR(255) DEFAULT 'Zizziq',
         category VARCHAR(255) DEFAULT 'Craftsmanship',
         date VARCHAR(255) NOT NULL,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
