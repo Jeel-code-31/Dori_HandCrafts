@@ -114,7 +114,7 @@ export default function Aboutus() {
             {visionImages.map((img, index) => (
               <div key={index} className="relative  overflow-hidden group">
                  <Image
-              src="/images/Our_Vision.png"
+              src="/images/Our_vision.png"
               alt="Dori Handicrafts Our Vision Poster"
               fill
               sizes="(max-width: 768px) 100vw, 100vw"
