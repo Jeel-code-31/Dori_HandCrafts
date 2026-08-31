@@ -59,13 +59,13 @@ export default function Aboutus() {
         {/* 1. OUR MISSION SECTION */}
         <section className="grid grid-cols-1 md:grid-cols-2 items-stretch rounded-none overflow-hidden">
           {/* Left Poster Image */}
-          <div className="relative min-h-[420px] sm:min-h-[520px] bg-[#FAF2E4]">
+          <div className="relative min-h-[480px] sm:min-h-[580px] bg-[#FAF2E4]">
             <Image
-              src="/images/mission_poster.png"
+              src="/images/Our_mission.png"
               alt="Dori Handicrafts Our Mission Poster"
               fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover object-center"
+              sizes="(max-width: 768px) 50vw, 50vw"
+              className="object-cover object-top"
               priority
             />
           </div>
@@ -75,8 +75,18 @@ export default function Aboutus() {
             <h2 className="text-xl sm:text-2xl font-bold tracking-wider text-[#2C2420] font-sans uppercase">
               OUR MISSION
             </h2>
-            <p className="text-sm sm:text-base text-[#4E4137] leading-[1.8] font-sans font-normal">
-              Our mission is to preserve and promote the beauty of handcrafted artistry by creating timeless macrame and lifestyle products that blend traditional craftsmanship with modern aesthetics. We are committed to empowering rural women artisans by providing sustainable livelihood opportunities, encouraging creativity, and supporting financial independence. Through thoughtful design and meaningful craftsmanship, we aim to bring warmth, elegance, and authentic handmade experiences into homes, cafes, villas, and modern spaces around the world.
+            <h2 className="text-sm sm:text-xl text-[#2C2420] font-sans font-medium">
+              To create meaningful art,Design and lifestyle experiences by combining India creativity, skilled craftmanship,innovative thinking and responsible use of materials
+            </h2>
+            <p className="text-sm sm:text-base text-[#4E4137] leading-[1.8] font-sans font-medium">
+              At <Link href='https://zizziq.com' target='blank' className="underline font-bold">Zizziq.com</Link>, We transform ideas into distinctive creative gifting ideas, tabletop Sculptures art installations, architectural artworks, sustainable creation and throughtfully designed products for contemporary spaces.<br></br>
+              Our mission is to bridge the worlds of Art, Designed, Craftsmanship and Sustainablity- Creating works that are visually compelling, culturally meaningfull and relevant to the needs of modern homes, hospitality, corporate, public and commercial spaces.<br></br>
+              We are committed to exploring new possibilites in materials and processes, including giving discarded and industrial materials a new life through creative transformation. At the same time, we seek to preserve and celebrate the human skill,creativity and cultural knowledge embadded in Indian Craftmanship.<br></br>
+              Through <b>Zizziq</b>, Our international-facing platform, we extend this philosophy into a curated range of Indian-designed and handcrafted lifestyle products, connecting Indian makers and creative enterprise with global buyers, designers, retailers and hospitality businesses.
+              
+            </p>
+            <p className="text-sm sm:text-base text-c[#4E4137] leading-[1.8] font-sans font-light"> 
+              Our mission is to create responsibly, collaborate meaningfully and take Indian creativity from exceptional spaces to everyday life—and from India to the world.
             </p>
           </div>
         </section>
@@ -88,59 +98,33 @@ export default function Aboutus() {
             <h2 className="text-xl sm:text-2xl font-bold tracking-wider text-[#2C2420] font-sans uppercase">
               OUR VISION
             </h2>
+            <h2 className="text-sm sm:text-xl text-[#2C2420] font-sans font-medium">
+              To become a globally recognized creative enterprise from India, Transforming imagination,Craftsmanship & materials into art, design and products that create lasting value for people,places and the planet.
+            </h2>
             <p className="text-sm sm:text-base text-[#4E4137] leading-[1.8] font-sans font-normal">
-              Our vision is to build Dori Handicrafts into a globally recognized handcrafted lifestyle brand known for timeless design, meaningful craftsmanship, and social impact. We aspire to transform modern spaces with artistic handmade creations while creating a strong community of empowered rural women artisans. By blending tradition with innovation, we envision a future where handmade products are valued not only for their beauty, but also for the stories, culture, and livelihoods they represent.
+              At <Link href='https://zizziq.com' target='blank' className="underline font-bold">Zizziq.com</Link>, We envision a future where India Creativity is expericed beyon geographical boundaries-through iconic creative gifting ideas Sculptures, bespoke installations, sustainable design and throughtfully crafted lifestyle products.<br></br>
+              We asprie to bridge art, design, technology and sustainablity, transforming overlooked and discarded materials into meaningful creations while creating new opportunities for skilled makers, artists and craftmen.<br></br>
+              Through our Work and our international platform <b>Zizziq</b>, We aim to take distinctive Indian Creativity to global markets and build meaningful collabrations with architects, designers, hospitality brands, retailers, instituion and businesses.<br></br>
+              Our vision to make india creativity gloablly relevent-turning materials into meaning,spaces into experiences, and ideas into enduring works of art.
             </p>
           </div>
 
           {/* Right 3x3 Photo Grid */}
           <div className="grid grid-cols-3 gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-[#FAF2E4] order-1 md:order-2 min-h-[420px] sm:min-h-[520px]">
             {visionImages.map((img, index) => (
-              <div key={index} className="relative aspect-square overflow-hidden group">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  sizes="(max-width: 768px) 33vw, 16vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                />
+              <div key={index} className="relative  overflow-hidden group">
+                 <Image
+              src="/images/Our_Vision.png"
+              alt="Dori Handicrafts Our Vision Poster"
+              fill
+              sizes="(max-width: 768px) 100vw, 100vw"
+              className="object-cover object-top"
+              priority
+            />
               </div>
             ))}
           </div>
         </section>
-
-        {/* 3. THE FOUNDER SECTION */}
-        <section className="grid grid-cols-1 md:grid-cols-2 items-stretch rounded-none overflow-hidden">
-          {/* Left Founder Image */}
-          <div className="relative min-h-[440px] sm:min-h-[540px] bg-[#FAF2E4] flex items-end justify-center">
-            <Image
-              src="/images/founder.png"
-              alt="Tushar Ahir - Founder of Dori Handicrafts"
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-contain object-bottom"
-            />
-          </div>
-
-          {/* Right Text Block */}
-          <div className="bg-white p-8 sm:p-12 lg:p-16 flex flex-col justify-center space-y-6">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-wider text-[#2C2420] font-sans uppercase">
-              THE FOUNDER
-            </h2>
-            <p className="text-sm sm:text-base text-[#4E4137] leading-[1.8] font-sans font-normal">
-              Dori Handicrafts was founded by Tushar Ahir with a vision to transform traditional handmade artistry into a modern luxury experience. Inspired by the craft traditions learned from family and driven by a passion for elegant design, the brand began with handcrafted macramé creations and grew into a premium artisan label celebrating timeless craftsmanship. Every piece is thoughtfully handmade with attention to detail, blending heritage techniques with contemporary aesthetics while creating meaningful opportunities for skilled women artisans across India.
-            </p>
-            <div>
-              <Link
-                href="/journal"
-                className="btn-animate text-xs font-bold uppercase tracking-widest px-6 py-3 inline-block"
-              >
-               Know More
-              </Link>
-            </div>
-          </div>
-        </section>
-
       </div>
     </div>
   );
